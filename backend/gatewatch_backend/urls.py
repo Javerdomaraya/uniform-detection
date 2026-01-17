@@ -1,0 +1,31 @@
+
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+from gatewatch_api.views import GetUserProfileView, CameraStreamWithDetection
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+
+    # JWT Authentication Endpoints
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # User Profile Endpoint
+    path('api/user/profile/', GetUserProfileView.as_view(), name='user-profile'),
+
+    # Include your other API endpoints
+    path('api/', include('gatewatch_api.urls')),
+
+    # Camera stream with YOLO detection and violation capture
+    path('camera/<int:camera_id>/stream/', CameraStreamWithDetection.as_view(), name='camera-stream'),
+]
+
+# Serve media files during development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
