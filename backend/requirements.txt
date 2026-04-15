@@ -6,7 +6,7 @@ dj-database-url==3.1.2
 django-filter==24.1
 
 # JWT & Authentication
-djangorestframework-simplejwt==5.3.2
+djangorestframework-simplejwt==5.5.1
 firebase-admin==6.5.0
 PyJWT==2.8.1
 
@@ -16,9 +16,6 @@ psycopg2-binary==2.9.9
 # APIs & External Services
 requests==2.32.5
 cloudinary==1.40.0
-
-# Email
-django-anymail==10.2
 
 # ASGI Server
 gunicorn==23.0.0
