@@ -1,6 +1,6 @@
-import { Button } from '../components/ui/button';
+import { Button } from '@/components/ui/button';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { AlertTriangle } from 'lucide-react';
 

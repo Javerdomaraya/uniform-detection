@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import apiClient, { getImageUrl } from '@/lib/axios';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { Input } from '../components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../components/ui/dialog';
-import { Progress } from '../components/ui/progress';
-import { Checkbox } from '../components/ui/checkbox';
-import { useAuth } from '../hooks/useAuth';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Progress } from '@/components/ui/progress';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useAuth } from '@/hooks/useAuth';
 import { XCircle, CheckCircle, AlertTriangle, User, Building2, Calendar, Camera, Eye, Download, Search, Filter, SortAsc, Trash2, ZoomIn, EllipsisVertical } from 'lucide-react';
 
 interface ViolationLog {

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import apiClient from '@/lib/axios';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Camera, Monitor, RefreshCw, Users, Clock } from 'lucide-react';
-import { Alert, AlertDescription } from '../components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface ActiveCamera {
   id: number;
