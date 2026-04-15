@@ -8,9 +8,7 @@ import {
   sendPasswordResetEmail
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+import apiClient from '@/lib/axios';
 
 export const useFirebaseAuth = () => {
   const [loading, setLoading] = useState(false);
@@ -27,7 +25,7 @@ export const useFirebaseAuth = () => {
       const idToken = await userCredential.user.getIdToken();
       
       // Send token to Django backend
-      const response = await axios.post(`${API_URL}/api/auth/firebase/login/`, {
+      const response = await apiClient.post('/api/auth/firebase/login/', {
         idToken
       });
       
@@ -37,8 +35,9 @@ export const useFirebaseAuth = () => {
       
       setLoading(false);
       return response.data;
-    } catch (err: any) {
-      setError(err.message || 'Login failed');
+    } catch (err: unknown) {
+      const firebaseErr = err as { message?: string };
+      setError(firebaseErr.message || 'Login failed');
       setLoading(false);
       throw err;
     }
@@ -55,7 +54,7 @@ export const useFirebaseAuth = () => {
       const idToken = await userCredential.user.getIdToken();
       
       // Send to Django backend
-      const response = await axios.post(`${API_URL}/api/auth/firebase/register/`, {
+      const response = await apiClient.post('/api/auth/firebase/register/', {
         email,
         password,
         displayName,
@@ -68,8 +67,9 @@ export const useFirebaseAuth = () => {
       
       setLoading(false);
       return response.data;
-    } catch (err: any) {
-      setError(err.message || 'Registration failed');
+    } catch (err: unknown) {
+      const firebaseErr = err as { message?: string };
+      setError(firebaseErr.message || 'Registration failed');
       setLoading(false);
       throw err;
     }
@@ -86,7 +86,7 @@ export const useFirebaseAuth = () => {
       const idToken = await userCredential.user.getIdToken();
       
       // Send token to Django backend
-      const response = await axios.post(`${API_URL}/api/auth/firebase/login/`, {
+      const response = await apiClient.post('/api/auth/firebase/login/', {
         idToken
       });
       
@@ -96,8 +96,9 @@ export const useFirebaseAuth = () => {
       
       setLoading(false);
       return response.data;
-    } catch (err: any) {
-      setError(err.message || 'Google login failed');
+    } catch (err: unknown) {
+      const firebaseErr = err as { message?: string };
+      setError(firebaseErr.message || 'Google login failed');
       setLoading(false);
       throw err;
     }
@@ -113,8 +114,9 @@ export const useFirebaseAuth = () => {
       localStorage.removeItem('firebase_token');
       localStorage.removeItem('user');
       setLoading(false);
-    } catch (err: any) {
-      setError(err.message || 'Logout failed');
+    } catch (err: unknown) {
+      const firebaseErr = err as { message?: string };
+      setError(firebaseErr.message || 'Logout failed');
       setLoading(false);
       throw err;
     }
@@ -129,8 +131,9 @@ export const useFirebaseAuth = () => {
       await sendPasswordResetEmail(auth, email);
       setLoading(false);
       return true;
-    } catch (err: any) {
-      setError(err.message || 'Password reset failed');
+    } catch (err: unknown) {
+      const firebaseErr = err as { message?: string };
+      setError(firebaseErr.message || 'Password reset failed');
       setLoading(false);
       throw err;
     }
