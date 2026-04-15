@@ -88,9 +88,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       return {};
 
-    } catch (error: any) {
-      console.error('Login error:', error.response);
-      return { error: error.response?.data?.detail || 'An unexpected error occurred.' };
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { detail?: string } } };
+      console.error('Login error:', err.response);
+      return { error: err.response?.data?.detail || 'An unexpected error occurred.' };
     }
   };
 
@@ -109,6 +110,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
