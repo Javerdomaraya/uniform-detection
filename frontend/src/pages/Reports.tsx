@@ -488,7 +488,7 @@ export default function Reports() {
             </div>
           </CardContent>
 
-          <div className="flex items-center p-6 pt-0 border-t bg-slate-50/50 p-4">
+          <div className="flex items-center p-4 border-t bg-slate-50/50">
             <div className="w-full flex justify-between items-center text-sm">
               <div className="flex items-center gap-2 text-orange-600 bg-orange-50 px-3 py-1.5 rounded-md border border-orange-100">
                 <AlertTriangle className="w-4 h-4" />
@@ -564,7 +564,7 @@ export default function Reports() {
             </div>
           </CardContent>
 
-          <div className="flex items-center p-6 pt-0 p-6 pt-2 grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <Button variant="outline" className="w-full">
               <Eye className="w-4 h-4 mr-2" />
               View Details
