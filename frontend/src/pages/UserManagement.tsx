@@ -65,9 +65,10 @@ export default function UserManagement() {
       // Update state to reflect the deletion
       setUsers(users.filter(u => u.id !== userId));
       alert('User deleted successfully.');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting user:', error);
-      alert(error.response?.data?.detail || 'Error deleting user. Please try again.');
+      const apiError = error as { response?: { data?: { detail?: string } } };
+      alert(apiError.response?.data?.detail || 'Error deleting user. Please try again.');
     }
   };
 
@@ -93,9 +94,10 @@ export default function UserManagement() {
       setUsers(users.map(u => u.id === editingUser.id ? response.data : u));
       setIsEditDialogOpen(false);
       setEditingUser(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating user:', error);
-      alert(error.response?.data?.detail || 'Error updating user');
+      const apiError = error as { response?: { data?: { detail?: string } } };
+      alert(apiError.response?.data?.detail || 'Error updating user');
     } finally {
       setUpdating(false);
     }
@@ -122,10 +124,11 @@ export default function UserManagement() {
       setUsers([...users, response.data]);
       setIsDialogOpen(false);
       setNewUser({ username: '', email: '', password: '', role: 'admin' });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating user:', error);
+      const apiError = error as { response?: { data?: Record<string, unknown> } };
       // Enhanced logging: Log the full error response for debugging
-      console.error('Full error response:', error.response?.data);
+      console.error('Full error response:', apiError.response?.data);
       
       // Parse validation errors
       let errorMessage = 'Error creating user';

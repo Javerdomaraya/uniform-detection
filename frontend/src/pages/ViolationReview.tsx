@@ -198,7 +198,7 @@ export default function ViolationReview() {
     }
 
     return violations.filter(violation => {
-      const violationDate = new Date(violation.timestamp || violation.latest_violation);
+      const violationDate = new Date(violation.timestamp);
       return violationDate >= startDate;
     });
   };
