@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -54,9 +54,26 @@ export default function IdentifyViolations() {
     notes: ''
   });
 
+  const fetchUnidentifiedViolations = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      const response = await apiClient.get('/api/violations/unidentified/');
+      setViolations(response.data.violations || []);
+    } catch (error) {
+      console.error('Error fetching violations:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load violations",
+        variant: "destructive"
+      });
+    } finally {
+      setRefreshing(false);
+    }
+  }, [toast]);
+
   useEffect(() => {
     fetchUnidentifiedViolations();
-  }, []);
+  }, [fetchUnidentifiedViolations]);
 
   // Filter violations based on search and filters
   const filteredViolations = violations.filter((v) => {
@@ -73,27 +90,6 @@ export default function IdentifyViolations() {
 
   // Get unique cameras for filter dropdown
   const uniqueCameras = Array.from(new Set(violations.map(v => v.camera_name).filter(Boolean)));
-
-  useEffect(() => {
-    fetchUnidentifiedViolations();
-  }, []);
-
-  const fetchUnidentifiedViolations = async () => {
-    setRefreshing(true);
-    try {
-      const response = await apiClient.get('/api/violations/unidentified/');
-      setViolations(response.data.violations || []);
-    } catch (error) {
-      console.error('Error fetching violations:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load violations",
-        variant: "destructive"
-      });
-    } finally {
-      setRefreshing(false);
-    }
-  };
 
   const handleIdentify = (violation: Violation) => {
     setSelectedViolation(violation);
