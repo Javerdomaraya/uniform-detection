@@ -24,5 +24,12 @@ apiClient.interceptors.request.use(
   }
 );
 
+// Helper function to get full image URL
+export const getImageUrl = (path: string | undefined | null): string => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  return `${API_BASE_URL}${path}`;
+};
+
 export default apiClient;
 export { API_BASE_URL };
