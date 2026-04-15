@@ -208,8 +208,9 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
+    "http://localhost:8081",
     "https://uniform-detection-six.vercel.app",
-    "https://uniform-detection-hbx78vxje-javer-domarayas-projects.vercel.app",
+    "https://uniform-detection-91db32ti5-javer-domarayas-projects.vercel.app",
 ]
 
 # Custom User Model
