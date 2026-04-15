@@ -754,7 +754,7 @@ export default function IdentifyViolations() {
             <DialogDescription>Full size view of the violation snapshot</DialogDescription>
           </DialogHeader>
           <img 
-            src={selectedViolation?.image_url || `http://localhost:8000${selectedViolation?.image}`} 
+            src={getImageUrl(selectedViolation?.image_url) || getImageUrl(selectedViolation?.image)} 
             alt="Violation Zoomed" 
             className="w-full h-auto rounded-lg" 
           />

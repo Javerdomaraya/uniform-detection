@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiClient, { getImageUrl } from '@/lib/axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -350,7 +350,7 @@ export default function SecurityDashboard() {
   // Fetch stats function (reusable)
   const fetchStats = async (range = timeRange) => {
     try {
-      const statsResponse = await axios.get(`http://127.0.0.1:8000/api/security/stats/?range=${range}`);
+      const statsResponse = await apiClient.get(`/api/security/stats/?range=${range}`);
       setTodayStats(statsResponse.data);
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -370,9 +370,9 @@ export default function SecurityDashboard() {
     try {
       // Refetch all dashboard data
       const [statsResponse, alertsResponse, reviewResponse] = await Promise.all([
-        axios.get(`http://127.0.0.1:8000/api/security/stats/?range=${timeRange}`),
-        axios.get('http://127.0.0.1:8000/api/security/alerts/'),
-        axios.get('http://127.0.0.1:8000/api/violations/review/')
+        apiClient.get(`/api/security/stats/?range=${timeRange}`),
+        apiClient.get('/api/security/alerts/'),
+        apiClient.get('/api/violations/review/')
       ]);
 
       setTodayStats(statsResponse.data);
@@ -427,7 +427,7 @@ export default function SecurityDashboard() {
   const fetchCameras = async () => {
     try {
       setCamerasLoading(true);
-      const response = await axios.get('http://127.0.0.1:8000/api/management/cameras/', {
+      const response = await apiClient.get('/api/management/cameras/', {
         // Temporarily remove auth for testing
         // headers: { Authorization: `Bearer ${token}` }
       });
@@ -463,7 +463,7 @@ export default function SecurityDashboard() {
         is_active: true // Default to active when creating
       };
 
-      const response = await axios.post('http://127.0.0.1:8000/api/management/cameras/', cameraData, {
+      const response = await apiClient.post('/api/management/cameras/', cameraData, {
         headers: {
           'Content-Type': 'application/json',
         }
@@ -523,7 +523,7 @@ export default function SecurityDashboard() {
     }
 
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/management/cameras/${cameraId}/`, {
+      await apiClient.delete(`/api/management/cameras/${cameraId}/`, {
         // Temporarily remove auth for testing
         // headers: { Authorization: `Bearer ${token}` }
       });
@@ -556,7 +556,7 @@ export default function SecurityDashboard() {
 
     setIsUpdatingCamera(true);
     try {
-      await axios.put(`http://127.0.0.1:8000/api/management/cameras/${editingCamera.id}/`, editCamera, {
+      await apiClient.put(`/api/management/cameras/${editingCamera.id}/`, editCamera, {
         // Temporarily remove auth for testing
         // headers: { Authorization: `Bearer ${token}` }
       });
@@ -594,8 +594,8 @@ export default function SecurityDashboard() {
     }
 
     try {
-      await axios.patch(
-        `http://127.0.0.1:8000/api/management/cameras/${cameraId}/`,
+      await apiClient.patch(
+        `/api/management/cameras/${cameraId}/`,
         {
           is_active: !currentStatus
         },
@@ -603,18 +603,16 @@ export default function SecurityDashboard() {
           headers: {
             'Content-Type': 'application/json',
           }
-          // Temporarily remove auth for testing
-          // headers: { Authorization: `Bearer ${token}` }
         }
       );
 
       // Mark camera as streaming/not streaming for Admin monitoring
       if (!currentStatus) {
         // Starting camera - mark as streaming
-        await axios.post(`http://127.0.0.1:8000/api/camera/${cameraId}/start-stream/`);
+        await apiClient.post(`/api/camera/${cameraId}/start-stream/`);
       } else {
         // Stopping camera - mark as not streaming
-        await axios.post(`http://127.0.0.1:8000/api/camera/${cameraId}/stop-stream/`);
+        await apiClient.post(`/api/camera/${cameraId}/stop-stream/`);
       }
 
       // Refresh cameras list
@@ -667,17 +665,10 @@ export default function SecurityDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Temporarily remove auth and use absolute URLs for testing
         const [statsResponse, alertsResponse, reviewResponse] = await Promise.all([
-          axios.get('http://127.0.0.1:8000/api/security/stats/', {
-            // headers: { Authorization: `Bearer ${token}` }
-          }),
-          axios.get('http://127.0.0.1:8000/api/security/alerts/', {
-            // headers: { Authorization: `Bearer ${token}` }
-          }),
-          axios.get('http://127.0.0.1:8000/api/violations/review/', {
-            // headers: { Authorization: `Bearer ${token}` }
-          })
+          apiClient.get('/api/security/stats/'),
+          apiClient.get('/api/security/alerts/'),
+          apiClient.get('/api/violations/review/')
         ]);
 
         setTodayStats(statsResponse.data);
@@ -1041,7 +1032,7 @@ export default function SecurityDashboard() {
                         <div className="w-full h-full relative">
                           <iframe
                             className="w-full h-full border-0"
-                            src={`http://127.0.0.1:8000/api/camera/${camera.id}/stream/`}
+                            src={getImageUrl(`/api/camera/${camera.id}/stream/`)}
                             title={`${camera.name} test stream`}
                             onLoad={() => handleCameraLoad(camera.id)}
                             onError={(e) => handleCameraError(camera.id, e)}
@@ -1061,7 +1052,7 @@ export default function SecurityDashboard() {
                         <div className="w-full h-full bg-slate-900 flex items-center justify-center relative">
                           <img
                             className="w-full h-full object-cover"
-                            src={`http://127.0.0.1:8000/api/camera/${camera.id}/stream/`}
+                            src={getImageUrl(`/api/camera/${camera.id}/stream/`)}
                             alt={`${camera.name} live stream`}
                             onLoad={() => handleCameraLoad(camera.id)}
                             onError={(e) => handleCameraError(camera.id, e)}
@@ -1087,7 +1078,7 @@ export default function SecurityDashboard() {
                         <div className="w-full h-full bg-slate-900 flex items-center justify-center relative">
                           <img
                             className="w-full h-full object-cover"
-                            src={`http://127.0.0.1:8000/api/camera/${camera.id}/stream/`}
+                            src={getImageUrl(`/api/camera/${camera.id}/stream/`)}
                             alt={`${camera.name} live stream`}
                             onLoad={() => handleCameraLoad(camera.id)}
                             onError={(e) => handleCameraError(camera.id, e)}
@@ -1113,7 +1104,7 @@ export default function SecurityDashboard() {
                         <div className="w-full h-full bg-slate-900 flex items-center justify-center relative">
                           <img
                             className="w-full h-full object-cover"
-                            src={`http://127.0.0.1:8000/api/camera/${camera.id}/stream/`}
+                            src={getImageUrl(`/api/camera/${camera.id}/stream/`)}
                             alt={`${camera.name} live stream`}
                             onLoad={() => handleCameraLoad(camera.id)}
                             onError={(e) => handleCameraError(camera.id, e)}

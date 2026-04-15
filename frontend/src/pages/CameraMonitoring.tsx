@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import apiClient from '@/lib/axios';
+import apiClient, { getImageUrl } from '@/lib/axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -135,7 +135,7 @@ export default function CameraMonitoring() {
                   <div className="aspect-video bg-muted rounded-lg overflow-hidden relative">
                     <img
                       className="w-full h-full object-cover"
-                      src={`http://127.0.0.1:8000/api/camera/${camera.id}/stream/`}
+                      src={getImageUrl(`/api/camera/${camera.id}/stream/`)}
                       alt={`${camera.name} live stream`}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;

@@ -564,7 +564,7 @@ apiClient.get(`/api/security/stats/?range=${timeRange}`, {
                   <div className="aspect-video bg-muted rounded-lg overflow-hidden relative">
                     <img
                       className="w-full h-full object-cover"
-                      src={`http://127.0.0.1:8000/api/camera/${camera.id}/stream/`}
+                      src={getImageUrl(`/api/camera/${camera.id}/stream/`)}
                       alt={`${camera.name} live stream`}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
@@ -692,7 +692,7 @@ apiClient.get(`/api/security/stats/?range=${timeRange}`, {
                                   variant="outline" 
                                   size="sm" 
                                   className="text-xs flex-1"
-                                  onClick={() => setSelectedImage(violation.image_url || `http://localhost:8000${violation.image}`)}
+                                  onClick={() => setSelectedImage(getImageUrl(violation.image_url) || getImageUrl(violation.image))}
                                 >
                                   <Info className="h-3 w-3 mr-1" />
                                   View Image
