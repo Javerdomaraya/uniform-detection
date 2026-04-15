@@ -17,6 +17,9 @@ psycopg2-binary==2.9.9
 requests==2.32.5
 cloudinary==1.40.0
 
+# PDF Generation
+reportlab==4.0.9
+
 # ASGI Server
 gunicorn==23.0.0
 whitenoise==6.7.0
