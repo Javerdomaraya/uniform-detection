@@ -347,12 +347,12 @@ export default function IdentifyViolations() {
                         }}
                       />
                       <div className="absolute top-3 left-3 flex gap-2">
-                        <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 bg-red-100 text-red-700 border border-red-200 shadow-sm backdrop-blur-sm bg-red-50/90 border-red-200">
+                        <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 bg-red-50/90 text-red-700 border border-red-200 shadow-sm backdrop-blur-sm">
                           Non-Compliant
                         </span>
                       </div>
                       <div className="absolute top-3 right-3">
-                        <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 bg-blue-50 text-blue-700 border border-blue-200 shadow-sm backdrop-blur-sm bg-white/90">
+                        <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 bg-white/90 text-blue-700 border border-blue-200 shadow-sm backdrop-blur-sm">
                           {(violation.confidence * 100).toFixed(0)}% Match
                         </span>
                       </div>
