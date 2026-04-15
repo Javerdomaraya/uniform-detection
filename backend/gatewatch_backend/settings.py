@@ -19,7 +19,12 @@ SECRET_KEY = os.getenv(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.254.32"]
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "192.168.254.32",
+    "uniform-detection-api.onrender.com",
+]
 
 
 # Application definition
@@ -199,7 +204,12 @@ SIMPLE_JWT = {
 }
 
 # CORS configuration
-CORS_ALLOW_ALL_ORIGINS = True  # For development, set to specific domains in production
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://uniform-detection-six.vercel.app",
+]
 
 # Custom User Model
 AUTH_USER_MODEL = "gatewatch_api.User"
