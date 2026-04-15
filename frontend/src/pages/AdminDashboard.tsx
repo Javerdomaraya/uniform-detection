@@ -143,7 +143,6 @@ apiClient.get(`/api/security/stats/?range=${timeRange}`, {
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchData();
   }, [timeRange]);  const refreshDashboard = async () => {
@@ -217,7 +216,7 @@ apiClient.get(`/api/security/stats/?range=${timeRange}`, {
       const headers = ['Student Name', 'Department', 'Gender', 'Total Violations', 'Latest Violation Date', 'Status'];
       const rows = repeatOffenders.map((student: { student_name: string; department: number; gender: string; violation_count: number; latest_violation: string }) => [
         student.student_name || 'Unknown',
-        getDepartmentName(student.department) || 'N/A',
+        getDepartmentName(student.department.toString()) || 'N/A',
         student.gender === 'M' ? 'Male' : 'Female',
         student.violation_count || 0,
         student.latest_violation ? new Date(student.latest_violation).toLocaleString() : 'N/A',
@@ -246,7 +245,7 @@ apiClient.get(`/api/security/stats/?range=${timeRange}`, {
       const headers = ['Student Name', 'Department', 'Gender', 'Camera', 'Location', 'Date & Time', 'Notes', 'Reported By'];
       const rows = identifiedViolations.map((violation: { student_name: string; department: number; gender: string; camera_name: string; camera_location: string; timestamp: string; notes: string }) => [
         violation.student_name || 'Unknown',
-        getDepartmentName(violation.department) || 'N/A',
+        getDepartmentName(violation.department.toString()) || 'N/A',
         violation.gender === 'M' ? 'Male' : 'Female',
         violation.camera_name || 'N/A',
         violation.camera_location || 'N/A',

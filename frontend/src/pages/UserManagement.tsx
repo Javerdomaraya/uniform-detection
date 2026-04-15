@@ -132,8 +132,8 @@ export default function UserManagement() {
       
       // Parse validation errors
       let errorMessage = 'Error creating user';
-      if (error.response?.data) {
-        const data = error.response.data;
+      if (apiError.response?.data) {
+        const data = apiError.response.data;
         if (typeof data === 'object') {
           const messages = [];
           for (const [field, errors] of Object.entries(data)) {

@@ -56,13 +56,16 @@ export default function ViolationReview() {
   const [reportPeriod, setReportPeriod] = useState<'day' | 'month' | 'year'>('month');
   const { toast } = useToast();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    fetchViolationsForReview();
+    const loadViolations = async () => {
+      await fetchViolationsForReview();
+    };
+    
+    loadViolations();
     
     // Auto-refresh every 30 seconds to sync with Security Personnel deletions
     const interval = setInterval(() => {
-      fetchViolationsForReview();
+      loadViolations();
     }, 30000);
     
     return () => clearInterval(interval);
@@ -626,7 +629,7 @@ export default function ViolationReview() {
                       src={getImageUrl(violation.image_url) || getImageUrl(violation.image)} 
                       alt="Violation" 
                       className="w-full h-56 object-cover rounded-lg shadow-md transition-transform group-hover:scale-105 cursor-pointer"
-                      onClick={() => setSelectedImage(violation.image_url || `http://localhost:8000${violation.image}`)}
+                      onClick={() => setSelectedImage(getImageUrl(violation.image_url) || getImageUrl(violation.image))}
                     />
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 rounded-lg flex items-center justify-center">
@@ -637,7 +640,7 @@ export default function ViolationReview() {
                               variant="outline"
                               size="sm"
                               className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white hover:bg-gray-100"
-                              onClick={() => setSelectedImage(violation.image_url || `http://localhost:8000${violation.image}`)}
+                              onClick={() => setSelectedImage(getImageUrl(violation.image_url) || getImageUrl(violation.image))}
                             >
                               <Eye className="h-4 w-4 mr-2" />
                               View
