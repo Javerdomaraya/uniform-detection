@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '@/lib/axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -32,7 +32,7 @@ export default function CameraMonitoring() {
     }
     
     try {
-      const response = await axios.get('http://localhost:8000/api/camera/active/');
+      const response = await apiClient.get('/api/camera/active/');
       setActiveCameras(response.data.cameras || []);
       setLastUpdate(new Date());
     } catch (error) {

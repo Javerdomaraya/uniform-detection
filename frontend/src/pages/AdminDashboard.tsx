@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiClient, { getImageUrl } from '@/lib/axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -80,24 +80,25 @@ export default function AdminDashboard() {
     try {
       const token = 'mock-token'; // For now, using mock token since auth is not fully integrated
       const [statsResponse, logsResponse, violationsResponse, reviewResponse, allViolationsResponse, camerasResponse] = await Promise.all([
-        axios.get(`http://localhost:8000/api/security/stats/?range=${timeRange}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }),
-        axios.get('http://localhost:8000/api/dashboard/recent-logs/', {
-          headers: { Authorization: `Bearer ${token}` }
-        }),
-        axios.get('http://localhost:8000/api/management/violations/?identified=true&ordering=-timestamp', {
-          headers: { Authorization: `Bearer ${token}` }
-        }),
-        axios.get('http://localhost:8000/api/violations/review/', {
-          headers: { Authorization: `Bearer ${token}` }
-        }),
-        axios.get('http://localhost:8000/api/management/violations/?identified=true&sent_to_admin=true&ordering=-timestamp', {
-          headers: { Authorization: `Bearer ${token}` }
-        }),
-        axios.get('http://localhost:8000/api/camera/active/', {
-          headers: { Authorization: `Bearer ${token}` }
-        })
+apiClient.get(`/api/security/stats/?range=${timeRange}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }),
+      apiClient.get('/api/dashboard/recent-logs/', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }),
+      apiClient.get('/api/management/violations/?identified=true&ordering=-timestamp', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }),
+      apiClient.get('/api/violations/review/', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }),
+      apiClient.get('/api/management/violations/?identified=true&sent_to_admin=true&ordering=-timestamp'),
+      apiClient.get('/api/camera/active/'),
+      apiClient.get('/api/dashboard/recent-logs/'),
+      apiClient.get('/api/management/violations/?identified=true&ordering=-timestamp'),
+      apiClient.get('/api/violations/review/'),
+      apiClient.get('/api/management/violations/?identified=true&sent_to_admin=true&ordering=-timestamp'),
+      apiClient.get('/api/camera/active/')
       ]);
 
         // Map API response to include totalStudents for backward compatibility
@@ -168,7 +169,7 @@ export default function AdminDashboard() {
     const interval = setInterval(async () => {
       try {
         const token = 'mock-token';
-        const response = await axios.get('http://localhost:8000/api/camera/active/', {
+        const response = await apiClient.get('/api/camera/active/', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setActiveCameras(response.data.cameras || []);
@@ -598,10 +599,10 @@ export default function AdminDashboard() {
                 <div key={violation.id} className="border border-border rounded-lg hover:shadow-md transition-shadow bg-white dark:bg-slate-800">
                   <div className="flex items-start gap-3 p-3">
                     <img 
-                      src={violation.image_url || `http://localhost:8000${violation.image}`} 
+                      src={getImageUrl(violation.image_url) || getImageUrl(violation.image)} 
                       alt="Violation" 
                       className="w-16 h-16 object-cover rounded cursor-pointer hover:opacity-90 transition-opacity"
-                      onClick={() => setSelectedImage(violation.image_url || `http://localhost:8000${violation.image}`)}
+                      onClick={() => setSelectedImage(getImageUrl(violation.image_url) || getImageUrl(violation.image))}
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">

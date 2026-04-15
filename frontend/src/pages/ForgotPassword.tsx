@@ -5,7 +5,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useFirebaseAuth } from '../hooks/useFirebaseAuth';
-import axios from 'axios';
+import apiClient from '@/lib/axios';
 import { useToast } from '../hooks/use-toast';
 
 const ALLOWED_EMAILS = [
@@ -37,7 +37,7 @@ export default function ForgotPassword() {
     
     try {
       // Use backend to generate reset link (ensures it goes to frontend URL)
-      const resp = await axios.post('http://localhost:8000/api/auth/firebase/reset-password/', { email });
+      const resp = await apiClient.post('/api/auth/firebase/reset-password/', { email });
       // If dev, backend returns reset_link. Do not expose link in prod.
       if (resp.data && resp.data.reset_link) {
         console.log('Reset link:', resp.data.reset_link);

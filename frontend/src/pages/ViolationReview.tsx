@@ -9,7 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertTriangle, CheckCircle, Clock, User, Building2, RefreshCw, FileText, Download, Eye, ChevronDown } from 'lucide-react';
-import axios from 'axios';
+import apiClient, { getImageUrl } from '@/lib/axios';
 import { useToast } from '@/hooks/use-toast';
 
 interface RepeatOffender {
@@ -70,7 +70,7 @@ export default function ViolationReview() {
   const fetchViolationsForReview = async (showToast = false) => {
     setRefreshing(true);
     try {
-      const response = await axios.get('http://localhost:8000/api/violations/review/');
+      const response = await apiClient.get('/api/violations/review/');
       setRepeatOffenders(response.data.repeat_offenders || []);
       setPendingReview(response.data.pending_review || []);
       setPendingIdentification(response.data.pending_identification || []);
@@ -96,7 +96,7 @@ export default function ViolationReview() {
 
   const handleViewStudent = async (studentName: string) => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/violations/student-history/?student_name=${studentName}`);
+      const response = await apiClient.get(`/api/violations/student-history/?student_name=${studentName}`);
       setStudentViolations(response.data.violations || []);
       setSelectedStudent(studentName);
       setIsDialogOpen(true);
@@ -119,7 +119,7 @@ export default function ViolationReview() {
       const unreviewedIds = studentViolations.filter(v => !v.reviewed).map(v => v.id);
       
       for (const violationId of unreviewedIds) {
-        await axios.post(`http://localhost:8000/api/violations/${violationId}/review/`, {
+        await apiClient.post(`/api/violations/${violationId}/review/`, {
           notes: reviewNotes
         });
       }
@@ -273,7 +273,7 @@ export default function ViolationReview() {
   const downloadPDFReport = async (period: 'day' | 'month' | 'year') => {
     try {
       setLoading(true);
-      const response = await axios.get(`/api/management/violations/download_pdf_report/?period=${period}`, {
+      const response = await apiClient.get(`/api/management/violations/download_pdf_report/?period=${period}`, {
         responseType: 'blob'
       });
 
@@ -464,7 +464,7 @@ export default function ViolationReview() {
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
                           <img 
-                            src={violation.image_url || `http://localhost:8000${violation.image}`} 
+                            src={getImageUrl(violation.image_url) || getImageUrl(violation.image)} 
                             alt="Violation" 
                             className="w-20 h-20 object-cover rounded-lg"
                           />
@@ -527,7 +527,7 @@ export default function ViolationReview() {
                     <Card key={violation.id}>
                       <CardContent className="p-4">
                         <img 
-                          src={violation.image_url || `http://localhost:8000${violation.image}`} 
+                          src={getImageUrl(violation.image_url) || getImageUrl(violation.image)} 
                           alt="Violation" 
                           className="w-full h-48 object-cover rounded-lg mb-3"
                         />
@@ -576,7 +576,7 @@ export default function ViolationReview() {
                       <CardContent className="p-4">
                         <div className="flex gap-4">
                           <img 
-                            src={violation.image_url || `http://localhost:8000${violation.image}`} 
+                            src={getImageUrl(violation.image_url) || getImageUrl(violation.image)} 
                             alt="Violation" 
                             className="w-24 h-24 object-cover rounded-lg"
                           />
@@ -621,7 +621,7 @@ export default function ViolationReview() {
                 <div key={violation.id} className="space-y-3">
                   <div className="relative group">
                     <img 
-                      src={violation.image_url || `http://localhost:8000${violation.image}`} 
+                      src={getImageUrl(violation.image_url) || getImageUrl(violation.image)} 
                       alt="Violation" 
                       className="w-full h-56 object-cover rounded-lg shadow-md transition-transform group-hover:scale-105 cursor-pointer"
                       onClick={() => setSelectedImage(violation.image_url || `http://localhost:8000${violation.image}`)}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient, { getImageUrl } from '@/lib/axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -55,8 +55,8 @@ export default function ComplianceLogs() {
       try {
         // Fetch both identified violations AND all compliance detections
         const [violationsResponse, detectionsResponse] = await Promise.all([
-          axios.get('http://localhost:8000/api/management/violations/?identified=true&ordering=-timestamp'),
-          axios.get('http://localhost:8000/api/compliance-detections/?ordering=-timestamp')
+          apiClient.get('/api/management/violations/?identified=true&ordering=-timestamp'),
+          apiClient.get('/api/compliance-detections/?ordering=-timestamp')
         ]);
 
         setIdentifiedViolations(violationsResponse.data.results || violationsResponse.data || []);
@@ -298,8 +298,8 @@ export default function ComplianceLogs() {
                         <img
                           alt="Violation"
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          src={violation.image_url || `http://localhost:8000${violation.image}`}
-                          onClick={() => setSelectedImage(violation.image_url || `http://localhost:8000${violation.image}`)}
+                          src={getImageUrl(violation.image_url) || getImageUrl(violation.image)}
+                          onClick={() => setSelectedImage(getImageUrl(violation.image_url) || getImageUrl(violation.image))}
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
                       </div>
@@ -365,7 +365,7 @@ export default function ComplianceLogs() {
                         <button
                           className="inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-3 text-xs h-8 w-8 p-0 rounded-full"
                           title="Zoom Image"
-                          onClick={() => setSelectedImage(violation.image_url || `http://localhost:8000${violation.image}`)}
+                          onClick={() => setSelectedImage(getImageUrl(violation.image_url) || getImageUrl(violation.image))}
                         >
                           <ZoomIn className="h-4 w-4 text-slate-600" />
                         </button>

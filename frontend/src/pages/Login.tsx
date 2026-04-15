@@ -9,7 +9,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import axios from 'axios';
+import apiClient from '@/lib/axios';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -53,7 +53,7 @@ export default function Login() {
       console.log('Firebase user:', userCredential.user.email);
 
       // Verify with Django backend
-      const response = await axios.post('http://localhost:8000/api/auth/firebase/verify/', {
+      const response = await apiClient.post('/api/auth/firebase/verify/', {
         idToken
       });
 
@@ -149,7 +149,7 @@ export default function Login() {
       const idToken = await userCredential.user.getIdToken();
 
       // Verify with Django backend
-      const response = await axios.post('http://localhost:8000/api/auth/firebase/verify/', {
+      const response = await apiClient.post('/api/auth/firebase/verify/', {
         idToken
       });
 

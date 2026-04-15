@@ -12,7 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
 import { AlertCircle, User, Building2, UserCircle2, FileText, AlertTriangle, RefreshCw, Search, Filter, Calendar, Camera, ZoomIn, Save, CheckCircle, Hash, UserPlus, EllipsisVertical, Eye, BarChart3, Trash2 } from 'lucide-react';
-import axios from 'axios';
+import apiClient, { getImageUrl } from '@/lib/axios';
 import { useToast } from '@/hooks/use-toast';
 
 interface Violation {
@@ -81,7 +81,7 @@ export default function IdentifyViolations() {
   const fetchUnidentifiedViolations = async () => {
     setRefreshing(true);
     try {
-      const response = await axios.get('http://localhost:8000/api/violations/unidentified/');
+      const response = await apiClient.get('/api/violations/unidentified/');
       setViolations(response.data.violations || []);
     } catch (error) {
       console.error('Error fetching violations:', error);
@@ -155,8 +155,8 @@ export default function IdentifyViolations() {
 
     setIsSubmitting(true);
     try {
-      const response = await axios.post(
-        `http://localhost:8000/api/violations/${selectedViolation.id}/identify/`,
+      const response = await apiClient.post(
+        `/api/violations/${selectedViolation.id}/identify/`,
         formData
       );
 
@@ -194,7 +194,7 @@ export default function IdentifyViolations() {
     if (!violationToDelete) return;
 
     try {
-      await axios.delete(`http://localhost:8000/api/management/violations/${violationToDelete.id}/`);
+      await apiClient.delete(`/api/management/violations/${violationToDelete.id}/`);
       
       // Remove from local state
       setViolations(prev => prev.filter(v => v.id !== violationToDelete.id));
@@ -337,7 +337,7 @@ export default function IdentifyViolations() {
                   >
                     <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
                       <img
-                        src={violation.image_url || `http://localhost:8000${violation.image}`}
+                        src={getImageUrl(violation.image_url) || getImageUrl(violation.image)}
                         alt={`Violation at ${violation.camera_location}`}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
@@ -452,7 +452,7 @@ export default function IdentifyViolations() {
               <div className="relative group">
                 <div className="relative overflow-hidden rounded-xl bg-slate-100 shadow-lg">
                   <img
-                    src={selectedViolation.image_url || `http://localhost:8000${selectedViolation.image}`}
+                    src={getImageUrl(selectedViolation.image_url) || getImageUrl(selectedViolation.image)}
                     alt="Violation"
                     className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
                     onClick={() => setImageZoomed(true)}

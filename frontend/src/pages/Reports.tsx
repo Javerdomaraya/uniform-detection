@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '@/lib/axios';
 import { Users, TrendingUp, TrendingDown, AlertTriangle, AlertCircle, BarChart3, Info, Download, Eye, Calendar, CalendarDays, CheckCircle, XCircle, PieChart } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -53,7 +53,7 @@ export default function Reports() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/security/stats/?range=${timeRange}`);
+        const response = await apiClient.get(`/api/security/stats/?range=${timeRange}`);
         const data = response.data;
 
         const newStats = {
@@ -137,13 +137,30 @@ export default function Reports() {
     return { startDate, endDate };
   };
 
-  const downloadComplianceReport = async (period: 'week' | 'month' | 'all') => {
+  const downloadComplianceReport = async (period: 'day' | 'week' | 'month' | 'year') => {
     setIsExporting(true);
     try {
-      const { startDate, endDate } = getDateRange(period);
+      let startDate: string;
+      let endDate: string;
+      const now = new Date();
+      endDate = now.toISOString();
+
+      if (period === 'day') {
+        const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        startDate = yesterday.toISOString();
+      } else if (period === 'week') {
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        startDate = weekAgo.toISOString();
+      } else if (period === 'month') {
+        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        startDate = monthAgo.toISOString();
+      } else {
+        const yearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+        startDate = yearAgo.toISOString();
+      }
       
       // Fetch compliance data for the period
-      const response = await axios.get('/api/dashboard/stats/', {
+      const response = await apiClient.get('/api/dashboard/stats/', {
         params: {
           start_date: startDate.split('T')[0],
           end_date: endDate.split('T')[0]
@@ -155,7 +172,7 @@ export default function Reports() {
       const complianceRateNum = parseFloat(complianceRate);
 
       // Create CSV content
-      const periodLabel = period === 'week' ? 'This Week' : period === 'month' ? 'This Month' : 'All Time';
+      const periodLabel = period === 'week' ? 'This Week' : period === 'month' ? 'This Month' : period === 'year' ? 'This Year' : 'Today';
       const csvContent = [
         ['Compliance Report - ' + periodLabel],
         ['Generated:', new Date().toLocaleString()],

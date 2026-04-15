@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '@/lib/axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -40,12 +40,7 @@ export default function UserManagement() {
 
   const fetchUsers = async () => {
     try {
-      const token = user?.accessToken;
-      const response = await axios.get('/api/management/users/', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const response = await apiClient.get('/api/management/users/');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -98,11 +93,7 @@ export default function UserManagement() {
     setUpdating(true);
     try {
       const token = user?.accessToken;
-      const response = await axios.patch(`/api/management/users/${editingUser.id}/`, editUser, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const response = await apiClient.patch(`/api/management/users/${editingUser.id}/`, editUser);
       // Update the user in the list
       setUsers(users.map(u => u.id === editingUser.id ? response.data : u));
       setIsEditDialogOpen(false);
@@ -124,13 +115,9 @@ export default function UserManagement() {
     setCreating(true);
     try {
       const token = user?.accessToken;
-      const response = await axios.post('/api/management/users/', newUser, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const response = await apiClient.post('/api/management/users/', newUser);
       // Register the user with Firebase
-      await axios.post('http://localhost:8000/api/auth/firebase/register/', {
+      await apiClient.post('/api/auth/firebase/register/', {
         email: newUser.email,
         password: newUser.password,
         displayName: newUser.username,
