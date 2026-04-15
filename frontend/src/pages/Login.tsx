@@ -103,19 +103,20 @@ export default function Login() {
         // Force navigation and reload to apply auth state
         window.location.href = destination;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login error:', error);
       let errorMessage = 'Login failed. Please try again.';
+      const authError = error as { code?: string; message?: string };
       
-      if (error.code === 'auth/user-not-found') {
+      if (authError.code === 'auth/user-not-found') {
         errorMessage = 'No account found with this email address.';
-      } else if (error.code === 'auth/wrong-password') {
+      } else if (authError.code === 'auth/wrong-password') {
         errorMessage = 'Incorrect password. Please try again.';
-      } else if (error.code === 'auth/invalid-email') {
+      } else if (authError.code === 'auth/invalid-email') {
         errorMessage = 'Invalid email address format.';
-      } else if (error.code === 'auth/too-many-requests') {
+      } else if (authError.code === 'auth/too-many-requests') {
         errorMessage = 'Too many failed attempts. Please try again later.';
-      } else if (error.code === 'auth/network-request-failed') {
+      } else if (authError.code === 'auth/network-request-failed') {
         errorMessage = 'Network error. Please check your connection.';
       }
 
@@ -197,15 +198,16 @@ export default function Login() {
         // Force navigation and reload to apply auth state
         window.location.href = destination;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Google sign-in error:', error);
       let errorMessage = 'Google sign-in failed. Please try again.';
+      const authError = error as { code?: string; message?: string };
       
-      if (error.code === 'auth/popup-closed-by-user') {
+      if (authError.code === 'auth/popup-closed-by-user') {
         errorMessage = 'Sign-in cancelled. Please try again.';
-      } else if (error.code === 'auth/popup-blocked') {
+      } else if (authError.code === 'auth/popup-blocked') {
         errorMessage = 'Pop-up blocked. Please allow pop-ups and try again.';
-      } else if (error.code === 'auth/network-request-failed') {
+      } else if (authError.code === 'auth/network-request-failed') {
         errorMessage = 'Network error. Please check your connection.';
       }
 
@@ -317,7 +319,7 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="relative inline-flex items-center justify-center px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-70 disabled:cursor-not-allowed text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-lg shadow-blue-500/25 border border-transparent hover:scale-[1.02] active:scale-[0.98] w-full h-12 text-base shadow-blue-900/20"
+                  className="relative inline-flex items-center justify-center px-6 py-3 font-semibold tracking-wide transition-all duration-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-70 disabled:cursor-not-allowed text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-lg shadow-blue-500/25 border border-transparent hover:scale-[1.02] active:scale-[0.98] w-full h-12 text-base"
                 >
                   {loading ? (
                     <>
