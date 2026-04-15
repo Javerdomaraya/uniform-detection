@@ -84,7 +84,7 @@ export default function About() {
             className="h-32 w-32 object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-300"
           />
         </div>
-        <h1 className="text-5xl font-bold text-foreground bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+        <h1 className="text-5xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
           Biliran Province State University
         </h1>
         <h2 className="text-3xl font-semibold text-primary">Uniform Compliance Detection System</h2>
