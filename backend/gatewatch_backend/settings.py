@@ -228,17 +228,36 @@ from firebase_admin import credentials, auth
 import os, json
 
 # Load firebase credentials from env (preferred) or from file path
-# --- FIREBASE CONFIGURATION (Local File) ---
+# --- FIREBASE CONFIGURATION ---
 # Build path to the file (looks for backend/firebase-creds.json)
 FIREBASE_CRED_PATH = os.path.join(BASE_DIR, 'firebase-creds.json')
 
 if not firebase_admin._apps:
-    if os.path.exists(FIREBASE_CRED_PATH):
-        cred = credentials.Certificate(FIREBASE_CRED_PATH)
-        firebase_admin.initialize_app(cred)
-        print("[FIREBASE] Connected successfully using local file!")
-    else:
-        print(f"❌ [FIREBASE] Error: File not found at {FIREBASE_CRED_PATH}")
+    firebase_cred = None
+    
+    # Priority 1: Try to load from environment variable (for production/Render)
+    if os.getenv('FIREBASE_CREDENTIALS_JSON'):
+        try:
+            cred_dict = json.loads(os.getenv('FIREBASE_CREDENTIALS_JSON'))
+            firebase_cred = credentials.Certificate(cred_dict)
+            firebase_admin.initialize_app(firebase_cred)
+            print("[FIREBASE] Connected successfully using environment variable!")
+        except json.JSONDecodeError as e:
+            print(f"❌ [FIREBASE] Error: Invalid JSON in FIREBASE_CREDENTIALS_JSON environment variable: {e}")
+    
+    # Priority 2: Fall back to local file (for local development)
+    elif os.path.exists(FIREBASE_CRED_PATH):
+        try:
+            firebase_cred = credentials.Certificate(FIREBASE_CRED_PATH)
+            firebase_admin.initialize_app(firebase_cred)
+            print("[FIREBASE] Connected successfully using local file!")
+        except Exception as e:
+            print(f"❌ [FIREBASE] Error loading from local file: {e}")
+    
+    # If neither works, print error
+    if not firebase_admin._apps:
+        print(f"❌ [FIREBASE] Error: No credentials found!")
+        print(f"   Set FIREBASE_CREDENTIALS_JSON environment variable or place firebase-creds.json at {FIREBASE_CRED_PATH}")
 
 FIREBASE_CONFIG = {
     'apiKey': os.getenv('FIREBASE_API_KEY'),
