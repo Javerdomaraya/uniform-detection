@@ -132,24 +132,22 @@ export default function UserManagement() {
       
       // Parse validation errors
       let errorMessage = 'Error creating user';
-      if (apiError.response?.data) {
-        const data = apiError.response.data;
-        if (typeof data === 'object') {
-          const messages = [];
-          for (const [field, errors] of Object.entries(data)) {
-            if (Array.isArray(errors)) {
-              messages.push(`${field}: ${errors.join(', ')}`);
-            } else if (typeof errors === 'string') {
-              messages.push(`${field}: ${errors}`);
-            }
+      if (apiError.response?.data && typeof apiError.response.data === 'object') {
+        const data = apiError.response.data as Record<string, any>;
+        const messages = [];
+        for (const [field, errors] of Object.entries(data)) {
+          if (Array.isArray(errors)) {
+            messages.push(`${field}: ${errors.join(', ')}`);
+          } else if (typeof errors === 'string') {
+            messages.push(`${field}: ${errors}`);
           }
-          if (messages.length > 0) {
-            errorMessage = messages.join('; ');
-          }
-        } else if (data.detail) {
-          errorMessage = data.detail;
-        } else if (data.message) {
-          errorMessage = data.message;
+        }
+        if (messages.length > 0) {
+          errorMessage = messages.join('; ');
+        } else if ((data as any).detail) {
+          errorMessage = (data as any).detail as string;
+        } else if ((data as any).message) {
+          errorMessage = (data as any).message as string;
         }
       }
       

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -56,22 +56,7 @@ export default function ViolationReview() {
   const [reportPeriod, setReportPeriod] = useState<'day' | 'month' | 'year'>('month');
   const { toast } = useToast();
 
-  useEffect(() => {
-    const loadViolations = async () => {
-      await fetchViolationsForReview();
-    };
-    
-    loadViolations();
-    
-    // Auto-refresh every 30 seconds to sync with Security Personnel deletions
-    const interval = setInterval(() => {
-      loadViolations();
-    }, 30000);
-    
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchViolationsForReview = async (showToast = false) => {
+  const fetchViolationsForReview = useCallback(async (showToast = false) => {
     setRefreshing(true);
     try {
       const response = await apiClient.get('/api/violations/review/');
@@ -96,7 +81,18 @@ export default function ViolationReview() {
     } finally {
       setRefreshing(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchViolationsForReview();
+    
+    // Auto-refresh every 30 seconds to sync with Security Personnel deletions
+    const interval = setInterval(() => {
+      fetchViolationsForReview();
+    }, 30000);
+    
+    return () => clearInterval(interval);
+  }, [fetchViolationsForReview]);
 
   const handleViewStudent = async (studentName: string) => {
     try {

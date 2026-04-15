@@ -76,79 +76,109 @@ export default function AdminDashboard() {
     activeAlerts: 0
   });
 
-  const fetchData = async () => {
-    try {
-      const token = 'mock-token'; // For now, using mock token since auth is not fully integrated
-      const [statsResponse, logsResponse, violationsResponse, reviewResponse, allViolationsResponse, camerasResponse] = await Promise.all([
-apiClient.get(`/api/security/stats/?range=${timeRange}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }),
-      apiClient.get('/api/dashboard/recent-logs/', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }),
-      apiClient.get('/api/management/violations/?identified=true&ordering=-timestamp', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }),
-      apiClient.get('/api/violations/review/', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }),
-      apiClient.get('/api/management/violations/?identified=true&sent_to_admin=true&ordering=-timestamp'),
-      apiClient.get('/api/camera/active/'),
-      apiClient.get('/api/dashboard/recent-logs/'),
-      apiClient.get('/api/management/violations/?identified=true&ordering=-timestamp'),
-      apiClient.get('/api/violations/review/'),
-      apiClient.get('/api/management/violations/?identified=true&sent_to_admin=true&ordering=-timestamp'),
-      apiClient.get('/api/camera/active/')
-      ]);
-
-        // Map API response to include totalStudents for backward compatibility
-        const mappedStats = {
-          ...statsResponse.data,
-          totalStudents: statsResponse.data.totalDetections,
-          activeAlerts: statsResponse.data.nonCompliant
-        };
-        setStats(mappedStats);
-        setRecentLogs(logsResponse.data);
-        setRecentViolations(violationsResponse.data?.slice(0, 5) || []);
-        setRepeatOffenders(reviewResponse.data.repeat_offenders || []);
-        setIdentifiedViolations(allViolationsResponse.data?.results || allViolationsResponse.data || []);
-        setActiveCameras(camerasResponse.data.cameras || []);
-        
-        // Animate stats
-        const targetStats = mappedStats;
-        const duration = 1000; // 1 second
-        const steps = 50;
-        const stepDuration = duration / steps;
-        
-        let step = 0;
-        const interval = setInterval(() => {
-          step++;
-          const progress = step / steps;
-          setAnimatedStats({
-            totalStudents: Math.floor(targetStats.totalStudents * progress),
-            compliant: Math.floor(targetStats.compliant * progress),
-            nonCompliant: Math.floor(targetStats.nonCompliant * progress),
-            activeAlerts: Math.floor(targetStats.activeAlerts * progress)
-          });
-          
-          if (step >= steps) {
-            clearInterval(interval);
-            setAnimatedStats(targetStats);
-          }
-        }, stepDuration);
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-      } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = 'mock-token'; // For now, using mock token since auth is not fully integrated
+        const [statsResponse, logsResponse, violationsResponse, reviewResponse, allViolationsResponse, camerasResponse] = await Promise.all([
+apiClient.get(`/api/security/stats/?range=${timeRange}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        apiClient.get('/api/dashboard/recent-logs/', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        apiClient.get('/api/management/violations/?identified=true&ordering=-timestamp', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        apiClient.get('/api/violations/review/', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        apiClient.get('/api/management/violations/?identified=true&sent_to_admin=true&ordering=-timestamp'),
+        apiClient.get('/api/camera/active/'),
+        apiClient.get('/api/dashboard/recent-logs/'),
+        apiClient.get('/api/management/violations/?identified=true&ordering=-timestamp'),
+        apiClient.get('/api/violations/review/'),
+        apiClient.get('/api/management/violations/?identified=true&sent_to_admin=true&ordering=-timestamp'),
+        apiClient.get('/api/camera/active/')
+        ]);
+
+          // Map API response to include totalStudents for backward compatibility
+          const mappedStats = {
+            ...statsResponse.data,
+            totalStudents: statsResponse.data.totalDetections,
+            activeAlerts: statsResponse.data.nonCompliant
+          };
+          setStats(mappedStats);
+          setRecentLogs(logsResponse.data);
+          setRecentViolations(violationsResponse.data?.slice(0, 5) || []);
+          setRepeatOffenders(reviewResponse.data.repeat_offenders || []);
+          setIdentifiedViolations(allViolationsResponse.data?.results || allViolationsResponse.data || []);
+          setActiveCameras(camerasResponse.data.cameras || []);
+          
+          // Animate stats
+          const targetStats = mappedStats;
+          const duration = 1000; // 1 second
+          const steps = 50;
+          const stepDuration = duration / steps;
+          
+          let step = 0;
+          const interval = setInterval(() => {
+            step++;
+            const progress = step / steps;
+            setAnimatedStats({
+              totalStudents: Math.floor(targetStats.totalStudents * progress),
+              compliant: Math.floor(targetStats.compliant * progress),
+              nonCompliant: Math.floor(targetStats.nonCompliant * progress),
+              activeAlerts: Math.floor(targetStats.activeAlerts * progress)
+            });
+            
+            if (step >= steps) {
+              clearInterval(interval);
+              setAnimatedStats(targetStats);
+            }
+          }, stepDuration);
+        } catch (error) {
+          console.error('Error fetching dashboard data:', error);
+        } finally {
+        setLoading(false);
+      }
+    };
+    
     fetchData();
-  }, [timeRange]);  const refreshDashboard = async () => {
-    setIsRefreshing(true);
+  }, [timeRange]);
+
+  const refreshDashboard = async () => {
+    setLoading(true);
     try {
-      await fetchData();
+      const token = 'mock-token';
+      const [statsResponse, logsResponse, violationsResponse, reviewResponse, allViolationsResponse, camerasResponse] = await Promise.all([
+        apiClient.get(`/api/security/stats/?range=${timeRange}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        apiClient.get('/api/dashboard/recent-logs/', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        apiClient.get('/api/management/violations/?identified=true&ordering=-timestamp', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        apiClient.get('/api/violations/review/', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        apiClient.get('/api/management/violations/?identified=true&sent_to_admin=true&ordering=-timestamp'),
+        apiClient.get('/api/camera/active/')
+      ]);
+      
+      const mappedStats = {
+        ...statsResponse.data,
+        totalStudents: statsResponse.data.totalDetections,
+        activeAlerts: statsResponse.data.nonCompliant
+      };
+      setStats(mappedStats);
+      setRecentLogs(logsResponse.data);
+      setRecentViolations(violationsResponse.data?.slice(0, 5) || []);
+      setRepeatOffenders(reviewResponse.data.repeat_offenders || []);
+      setIdentifiedViolations(allViolationsResponse.data?.results || allViolationsResponse.data || []);
+      setActiveCameras(camerasResponse.data.cameras || []);
     } finally {
       setIsRefreshing(false);
     }
