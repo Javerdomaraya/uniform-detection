@@ -61,12 +61,7 @@ export default function UserManagement() {
     if (!confirmDelete) return;
 
     try {
-      const token = user?.accessToken;
-      await axios.delete(`/api/management/users/${userId}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      await apiClient.delete(`/api/management/users/${userId}/`);
       // Update state to reflect the deletion
       setUsers(users.filter(u => u.id !== userId));
       alert('User deleted successfully.');

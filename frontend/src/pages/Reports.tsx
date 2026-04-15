@@ -140,10 +140,9 @@ export default function Reports() {
   const downloadComplianceReport = async (period: 'day' | 'week' | 'month' | 'year') => {
     setIsExporting(true);
     try {
-      let startDate: string;
-      let endDate: string;
       const now = new Date();
-      endDate = now.toISOString();
+      const endDate = now.toISOString();
+      let startDate: string;
 
       if (period === 'day') {
         const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);

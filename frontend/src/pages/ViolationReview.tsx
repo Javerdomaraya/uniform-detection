@@ -56,6 +56,7 @@ export default function ViolationReview() {
   const [reportPeriod, setReportPeriod] = useState<'day' | 'month' | 'year'>('month');
   const { toast } = useToast();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchViolationsForReview();
     
@@ -178,7 +179,7 @@ export default function ViolationReview() {
   };
 
   // Filter violations by time period
-  const filterViolationsByPeriod = (violations: any[]) => {
+  const filterViolationsByPeriod = (violations: Violation[]) => {
     const now = new Date();
     let startDate: Date;
 
@@ -292,11 +293,12 @@ export default function ViolationReview() {
         title: "Success",
         description: `PDF report downloaded successfully for ${period} period`,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error downloading PDF:', error);
       
+      const apiError = error as { response?: { status: number } };
       let errorMessage = "Failed to download PDF report";
-      if (error.response?.status === 404) {
+      if (apiError.response?.status === 404) {
         errorMessage = `No reviewed violations found for the selected ${period} period`;
       }
       
