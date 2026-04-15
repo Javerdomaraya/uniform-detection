@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import apiClient from '@/lib/axios';
 import { AuthUser, UserProfile } from '@/types/auth';
 
 interface AuthContextType {
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signIn = async (email: string, password: string) => {
     try {
       // Step 1: Get the access and refresh tokens
-      const tokenResponse = await axios.post('/api/token/', {
+      const tokenResponse = await apiClient.post('/api/token/', {
         username: email, // Django JWT uses 'username' by default, using email as username
         password: password,
       });
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const refreshToken = tokenResponse.data.refresh;
 
       // Step 2: Use the token to fetch the user profile
-      const profileResponse = await axios.get('/api/user/profile/', {
+      const profileResponse = await apiClient.get('/api/user/profile/', {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }

@@ -10,6 +10,8 @@ import {
 import { auth } from '@/lib/firebase';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 export const useFirebaseAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +27,7 @@ export const useFirebaseAuth = () => {
       const idToken = await userCredential.user.getIdToken();
       
       // Send token to Django backend
-      const response = await axios.post('http://localhost:8000/api/auth/firebase/login/', {
+      const response = await axios.post(`${API_URL}/api/auth/firebase/login/`, {
         idToken
       });
       
@@ -53,7 +55,7 @@ export const useFirebaseAuth = () => {
       const idToken = await userCredential.user.getIdToken();
       
       // Send to Django backend
-      const response = await axios.post('http://localhost:8000/api/auth/firebase/register/', {
+      const response = await axios.post(`${API_URL}/api/auth/firebase/register/`, {
         email,
         password,
         displayName,
@@ -84,7 +86,7 @@ export const useFirebaseAuth = () => {
       const idToken = await userCredential.user.getIdToken();
       
       // Send token to Django backend
-      const response = await axios.post('http://localhost:8000/api/auth/firebase/login/', {
+      const response = await axios.post(`${API_URL}/api/auth/firebase/login/`, {
         idToken
       });
       
