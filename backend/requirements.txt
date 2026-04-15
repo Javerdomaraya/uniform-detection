@@ -8,7 +8,7 @@ django-filter==24.1
 # JWT & Authentication
 djangorestframework-simplejwt==5.5.1
 firebase-admin==6.5.0
-PyJWT==2.8.1
+PyJWT==2.12.1
 
 # Database
 psycopg2-binary==2.9.9
